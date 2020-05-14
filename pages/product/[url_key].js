@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from '../../redux/action/actionCart';
 import { compose } from "redux";
+import { Grid, TextField, Paper, Button } from "@material-ui/core";
 
 const Product = () => {
   const pageConfig = {
@@ -56,23 +57,28 @@ const Product = () => {
 
   return (
     <Layout pageConfig={pageConfig}>
-        <div className="product-image">
-            <img src={product.image.url} alt={product.image.label} />
-        </div>
-        <div className="availibity">
-            <small className="sku">{product.sku}</small>
-            <small>availibity: {product.stock_status}</small>
-        </div>
-        <h1>{product.name}</h1>
-        <Price price={product.price_range.minimum_price} />
-        <div className="form-add-to-cart">
-            <form id={`add-to-cart-${product.id}`} onSubmit={handleAddtoCart}>
-                <input value={qty} type="number" name="qty" id="qty" onChange={handleQty} />
-                <button type="submit">Add to Cart</button>
-            </form>
-        </div>
-        <div className="description" dangerouslySetInnerHTML={{__html: product.description.html}}>
-        </div>
+      <Grid container className="product-items" spacing={3}>
+        <Grid item sm={8}>
+          <div className="product-image">
+              <img src={product.image.url} alt={product.image.label} />
+          </div>
+        </Grid> 
+        <Grid item sm={4}>
+          <div className="availibity">
+              <small className="sku">{product.sku}</small>
+              <small>availibity: {product.stock_status}</small>
+          </div>
+          <h1>{product.name}</h1>
+          <Price price={product.price_range.minimum_price} />
+          <div className="form-add-to-cart">
+              <form id={`add-to-cart-${product.id}`} onSubmit={handleAddtoCart}>
+                  <TextField required label="Quantity" defaultValue={qty} id="qty" onChange={handleQty} />
+                  <Button variant="contained" type="submit">Add to Cart</Button>
+              </form>
+          </div>
+          <div className="description" dangerouslySetInnerHTML={{__html: product.description.html}}></div>
+        </Grid>
+      </Grid>
     </Layout>
   )
 };

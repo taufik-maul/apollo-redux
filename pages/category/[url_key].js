@@ -45,26 +45,29 @@ const Category = () => {
             <section className="child-category">
                 <CategoryList categoryData={category.children} />
             </section>
-            <Grid container className="product-items" spacing={3}>>
-                {(products)?products.map((product)=> (
-                    <Grid item key={product.id} xs={6} sm={6} md={4}>
-                    <Kotak 
-                        key={product.id} 
-                        cardClass="product-item" 
-                        title={product.name} 
-                        image={product.small_image.url}
-                        content={<Price price={product.price_range.minimum_price} showDiscount={true} />}
-                        link={
-                            {
-                                label:"Detail",
-                                href:"/product/[url_key]",
-                                as:`/product/${product.url_key}`
-                            }
-                        } 
-                    />
-                    </Grid>
-                )):<Grid item xs={6} sm={6} md={4}><Kotak cardClass="no-products" content="Produk nya noting" /></Grid>}
-            </Grid>
+            <section className="product-list">
+                <h3>Products</h3>
+                <Grid container className="product-items" spacing={3}>
+                    {(products)?products.map((product)=> (
+                        <Grid item key={product.id} xs={6} sm={6} md={4}>
+                        <Kotak 
+                            key={product.id} 
+                            cardClass="product-item" 
+                            title={product.name} 
+                            image={product.small_image.url}
+                            content={<Price price={product.price_range.minimum_price} showDiscount={true} />}
+                            link={
+                                {
+                                    label:"Detail",
+                                    href:"/product/[url_key]",
+                                    as:`/product/${product.url_key}`
+                                }
+                            } 
+                        />
+                        </Grid>
+                    )):<Grid item xs={6} sm={6} md={4}><Kotak cardClass="no-products" content="Produk nya noting" /></Grid>}
+                </Grid>
+            </section>
         </Layout>
     );
 };
