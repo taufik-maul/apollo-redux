@@ -9,7 +9,36 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from '../../redux/action/actionCart';
 import { compose } from "redux";
-import { Grid, TextField, Paper, Button } from "@material-ui/core";
+import { Grid, TextField, Paper, Button, CircularProgress, makeStyles, Icon } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  img: {
+    width: '100%'
+  },
+  description: {
+    width: '100%',
+    '& img, & iframe': {
+      width: '100%'
+    }
+  },
+  availibity: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    textTransform: 'capitalize'
+  },
+  formAddToCart: {
+    '& .material-icons': {
+      marginRight: '5px'
+    }
+  },
+  productInfo: {
+    display: 'block',
+    '& .section:not(last-child)': {
+      display: 'block',
+      margin: '0 0 10px'
+    }
+  }
+}))
 
 const Product = () => {
   const pageConfig = {
@@ -18,6 +47,7 @@ const Product = () => {
   const [qty=1, setQty] = useState();
   const dispatch = useDispatch();
   const router = useRouter();
+  const classes = useStyles();
   const { url_key } = router.query;
   const { loading, data } = useQuery(PRODUCT_BY_KEY, {
     variables: {
@@ -27,7 +57,7 @@ const Product = () => {
 
   if (loading) {
     return (
-      <div className="loading">Kela jang sakedap dipilarian heula ...</div>
+      <div className="loading">Wait ...</div>
     );
   }
 
@@ -57,28 +87,37 @@ const Product = () => {
 
   return (
     <Layout pageConfig={pageConfig}>
-      <Grid container className="product-items" spacing={3}>
-        <Grid item sm={8}>
-          <div className="product-image">
-              <img src={product.image.url} alt={product.image.label} />
-          </div>
+      {(loading)?<CircularProgress />:
+      <Grid container spacing={3}>
+        <Grid item sm={5}>
+          <section className="section product-image">
+              <img src={product.image.url} alt={product.image.label} className={classes.img} />
+          </section>
         </Grid> 
-        <Grid item sm={4}>
-          <div className="availibity">
-              <small className="sku">{product.sku}</small>
-              <small>availibity: {product.stock_status}</small>
+        <Grid item sm={7}>
+          <div className={classes.productInfo}>
+            <section className={`section ${classes.availibity}`}>
+                <small className="sku">{product.sku}</small>
+                <small>availibity: {product.stock_status}</small>
+            </section>
+            <section className="section product-info">
+              <h1>{product.name}</h1>
+              <Price price={product.price_range.minimum_price} />
+            </section>
+            <section className={`section ${classes.formAddToCart}`}>
+                <form id={`add-to-cart-${product.id}`} onSubmit={handleAddtoCart}>
+                    <TextField required label="Quantity" defaultValue={qty} id="qty" onChange={handleQty} />
+                    <Button variant="contained" type="submit"><Icon>add_shopping_cart</Icon> Add to Cart</Button>
+                </form>
+            </section>
+            <section className="section product-description">
+              <h4>Description</h4>
+              <div className={classes.description} dangerouslySetInnerHTML={{__html: product.description.html}}></div>
+            </section>
           </div>
-          <h1>{product.name}</h1>
-          <Price price={product.price_range.minimum_price} />
-          <div className="form-add-to-cart">
-              <form id={`add-to-cart-${product.id}`} onSubmit={handleAddtoCart}>
-                  <TextField required label="Quantity" defaultValue={qty} id="qty" onChange={handleQty} />
-                  <Button variant="contained" type="submit">Add to Cart</Button>
-              </form>
-          </div>
-          <div className="description" dangerouslySetInnerHTML={{__html: product.description.html}}></div>
         </Grid>
       </Grid>
+      }
     </Layout>
   )
 };

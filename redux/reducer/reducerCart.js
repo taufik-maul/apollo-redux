@@ -1,12 +1,9 @@
 const initState = {
-    cart: [],
-    cartCount: 0    
+    cart: [] 
 }
 
 
 const cart = (state = initState, action) => {
-    const cartCount = (state.cart.length)?state.cart.reduce((accum,item) => accum + item.qty, 0):0;
-console.log(action.type)
     switch (action.type) {
         case "ADD_TO_CART":
             let updateCart = [...state.cart,action.item];
@@ -17,15 +14,24 @@ console.log(action.type)
                         updateCart = [...state.cart]
                     }
             }
-            return {...state, cart: updateCart, cartCount: parseInt(cartCount) + parseInt(action.item.qty)}
+            return {...state, cart: updateCart}
             break;
         case "REMOVE_FROM_CART":
-            console.log(action)
-            return {...state}
+            let newArr = state.cart.filter(function( obj ) {
+                return obj.id !== action.id;
+            });
+            return {...state, cart: newArr}
             break;
         case "UPDATE_CART":
             console.log(action)
-            return {...state}
+            updateCart = [...state.cart];
+            if(state.cart.length) {
+                const sameItem = state.cart.findIndex(item => item.id === action.id)
+                    if(sameItem != -1) {
+                        state.cart[sameItem].qty = parseInt(action.qty);
+                    }
+            }
+            return {...state, cart: updateCart}
             break;
         case "CLEAR_ALL":
             

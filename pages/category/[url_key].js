@@ -30,9 +30,7 @@ const Category = () => {
     
     const category = data.categoryList[0];
     const products = (category.products.items)?category.products.items:null;
-
-    console.log(category)
-
+    
     return (
         <Layout pageConfig={pageConfig}>
             <section className="banner">
